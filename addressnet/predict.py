@@ -113,7 +113,7 @@ def predict_one(address: str, model_dir: str=None) -> Dict[str, str]:
     :return: a dictionary with the address components separated
     """
     if model_dir is None:
-        model_dir = os.path.join(os.path.dirname(__file__), 'model')
+        model_dir = os.path.join(os.path.dirname(__file__), 'pretrained')
     assert os.path.isdir(model_dir), "invalid model_dir provided: %s" % model_dir
     address_net_estimator = tf.estimator.Estimator(model_fn=model_fn,
                                                    model_dir=model_dir)

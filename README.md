@@ -90,7 +90,7 @@ natively supported by TensorFlow.
 ## Pretrained model
 While you are free to train this model using the `model_fn` provided,
 a pretrained model is supplied with this package under
-`addressnet/model` and is the default model loaded when using the
+`addressnet/pretrained` and is the default model loaded when using the
 prediction function. Thus, using this package should be as simple as:
 ```python
 from addressnet.predict import predict_one
