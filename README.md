@@ -7,7 +7,19 @@ segments an Australian street address into its components such that it
 can be more easily matched against a structured address database. The
 primary use-case for a model such as this is to transform legacy address
 data (e.g. unvalidated addresses, such as those collected on paper or by
-phone) into a reportable form at minimal cost.
+phone) into a reportable form at minimal cost. Once structured address
+data is produced, searching databases such as GNAF for geocoding
+information is much easier!
+
+## Installation
+Get the latest code by installing directly from git using
+```
+pip install git+https://github.com/jasonrig/address-net.git
+```
+
+You will need an appropriate version of TensorFlow installed, ideally greater
+than version 1.12. This is not automatically installed since the CPU and GPU
+versions of TensorFlow exist in separate packages.
 
 ## Model output
 This model performs character-level classification, assigning each
