@@ -89,8 +89,19 @@ if __name__ == "__main__":
 ```
 
 Expected output:
-```
-{'building_name': 'CASA DEL GELATO', 'flat_number': '10', 'flat_number_suffix': 'A', 'number_first': '24', 'number_last': '26', 'street_name': 'HIGH STREET', 'street_type': 'ROAD', 'locality_name': 'MOUNT WAVERLEY', 'state': 'VICTORIA', 'postcode': '3183'}
+```python
+{
+    'building_name': 'CASA DEL GELATO',
+    'flat_number': '10',
+    'flat_number_suffix': 'A',
+    'number_first': '24',
+    'number_last': '26',
+    'street_name': 'HIGH STREET',
+    'street_type': 'ROAD',
+    'locality_name': 'MOUNT WAVERLEY',
+    'state': 'VICTORIA',
+    'postcode': '3183'
+}
 ```
 
 Because the model is not sensitive to small typographical errors, a
