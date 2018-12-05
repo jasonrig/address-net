@@ -17,6 +17,13 @@ Get the latest code by installing directly from git using
 pip install git+https://github.com/jasonrig/address-net.git
 ```
 
+Or from PyPI:
+```
+pip install address-net
+pip install address-net[tf]     # install TensorFlow (CPU version)
+pip install address-net[tf_gpu] # install TensorFlow (GPU version)
+```
+
 You will need an appropriate version of TensorFlow installed, ideally greater
 than version 1.12. This is not automatically installed since the CPU and GPU
 versions of TensorFlow exist in separate packages.
