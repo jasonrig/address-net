@@ -45,7 +45,7 @@ a one of the following 22 classes as defined by the
 10. Flat type
 11. Number first prefix
 12. Number first
-13. number first suffix
+13. Number first suffix
 14. Number last prefix
 15. Number last
 16. Number last suffix
