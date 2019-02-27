@@ -15,6 +15,7 @@ setup(
     },
     install_requires=[
         'numpy',
+        'textdistance'
     ],
     include_package_data=True
 )

@@ -1,6 +1,6 @@
 import os
 from typing import Dict, List, Union
-from difflib import SequenceMatcher
+import textdistance
 import tensorflow as tf
 
 from addressnet.dataset import predict_input_fn, labels_list
@@ -39,14 +39,15 @@ def _get_best_match(target: str, candidates: Union[List[str], Dict[str, str]], k
     return best
 
 
-def _str_sim(a, b):
+def _str_sim(a, b, fn=textdistance.jaro_winkler):
     """
-    Wrapper function for difflib's SequenceMatcher
+    Wrapper function for the string similarity function
     :param a: a string to compare
     :param b: another string to compare
+    :param fn: the string similarity function from the textdistance package
     :return: the similarity ratio
     """
-    return SequenceMatcher(None, a, b).ratio()
+    return fn.normalized_similarity(a.lower(), b.lower())
 
 
 def normalise_state(s: str) -> str:
