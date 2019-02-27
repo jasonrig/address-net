@@ -489,25 +489,13 @@ def predict_input_fn(input_text: List[str]) -> Callable:
     :param input_text: the input text
     :return:
     """
-    pad_length = max([len(t) for t in input_text])
 
     def input_fn() -> tf.data.Dataset:
-        length, text = None, None
-
-        for txt in input_text:
-            _length, _text = vocab_lookup(txt)
-            _text = np.pad(_text, (0, pad_length - len(txt)), "constant")
-            _text = np.expand_dims(_text, 0)
-            _length = np.array([_length])
-            if length is None:
-                length = _length
-            else:
-                length = np.concatenate([length, _length], axis=0)
-            if text is None:
-                text = _text
-            else:
-                text = np.concatenate([text, _text], axis=0)
-        predict_ds = tf.data.Dataset.from_tensor_slices((length, text))
+        predict_ds = tf.data.Dataset.from_generator(
+            lambda: (vocab_lookup(address) for address in input_text),
+            (tf.int64, tf.int64),
+            (tf.TensorShape([]), tf.TensorShape([None]))
+        )
         predict_ds = predict_ds.batch(1)
         predict_ds = predict_ds.map(
             lambda lengths, encoded_text: {'lengths': lengths, 'encoded_text': encoded_text}

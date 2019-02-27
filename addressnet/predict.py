@@ -135,7 +135,7 @@ def predict(address: List[str], model_dir: str = None) -> List[Dict[str, str]]:
         model_dir = os.path.join(os.path.dirname(__file__), 'pretrained')
     assert os.path.isdir(model_dir), "invalid model_dir provided: %s" % model_dir
     address_net_estimator = _get_estimator(model_fn, model_dir)
-    result = list(address_net_estimator.predict(predict_input_fn(address)))
+    result = address_net_estimator.predict(predict_input_fn(address))
     class_names = [l.replace("_code", "") for l in labels_list]
     class_names = [l.replace("_abbreviation", "") for l in class_names]
     for addr, res in zip(address, result):
