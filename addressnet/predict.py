@@ -7,6 +7,7 @@ from addressnet.dataset import predict_input_fn, labels_list
 from addressnet.lookups import street_types, street_type_abbreviation, states, street_suffix_types, flat_types, \
     level_types
 from addressnet.model import model_fn
+from functools import lru_cache
 
 
 def _get_best_match(target: str, candidates: Union[List[str], Dict[str, str]], keep_idx: int = 0) -> str:
@@ -105,7 +106,13 @@ def normalise_level_type(s: str) -> str:
     return _get_best_match(s, level_types)
 
 
-def predict_one(address: str, model_dir: str=None) -> Dict[str, str]:
+@lru_cache(maxsize=2)
+def _get_estimator(model_fn, model_dir):
+    return tf.estimator.Estimator(model_fn=model_fn,
+                                  model_dir=model_dir)
+
+
+def predict_one(address: str, model_dir: str = None) -> Dict[str, str]:
     """
     Segments a given address into its components and attempts to normalise categorical components,
     e.g. state, street type
@@ -113,30 +120,41 @@ def predict_one(address: str, model_dir: str=None) -> Dict[str, str]:
     :param model_dir: path to trained model
     :return: a dictionary with the address components separated
     """
+    return next(predict([address], model_dir))
+
+
+def predict(address: List[str], model_dir: str = None) -> List[Dict[str, str]]:
+    """
+    Segments a set of addresses into their components and attempts to normalise categorical components,
+    e.g. state, street type
+    :param address: the input list of address strings
+    :param model_dir: path to trained model
+    :return: a list of dictionaries with the address components separated
+    """
     if model_dir is None:
         model_dir = os.path.join(os.path.dirname(__file__), 'pretrained')
     assert os.path.isdir(model_dir), "invalid model_dir provided: %s" % model_dir
-    address_net_estimator = tf.estimator.Estimator(model_fn=model_fn,
-                                                   model_dir=model_dir)
-    result = list(address_net_estimator.predict(predict_input_fn(address)))[0]
+    address_net_estimator = _get_estimator(model_fn, model_dir)
+    result = list(address_net_estimator.predict(predict_input_fn(address)))
     class_names = [l.replace("_code", "") for l in labels_list]
     class_names = [l.replace("_abbreviation", "") for l in class_names]
-    mappings = dict()
-    for char, class_id in zip(address.upper(), result['class_ids']):
-        if class_id == 0:
-            continue
-        cls = class_names[class_id - 1]
-        mappings[cls] = mappings.get(cls, "") + char
+    for addr, res in zip(address, result):
+        mappings = dict()
+        for char, class_id in zip(addr.upper(), res['class_ids']):
+            if class_id == 0:
+                continue
+            cls = class_names[class_id - 1]
+            mappings[cls] = mappings.get(cls, "") + char
 
-    if 'state' in mappings:
-        mappings['state'] = normalise_state(mappings['state'])
-    if 'street_type' in mappings:
-        mappings['street_type'] = normalise_street_type(mappings['street_type'])
-    if 'street_suffix' in mappings:
-        mappings['street_suffix'] = normalise_street_suffix(mappings['street_suffix'])
-    if 'flat_type' in mappings:
-        mappings['flat_type'] = normalise_flat_type(mappings['flat_type'])
-    if 'level_type' in mappings:
-        mappings['level_type'] = normalise_level_type(mappings['level_type'])
+        if 'state' in mappings:
+            mappings['state'] = normalise_state(mappings['state'])
+        if 'street_type' in mappings:
+            mappings['street_type'] = normalise_street_type(mappings['street_type'])
+        if 'street_suffix' in mappings:
+            mappings['street_suffix'] = normalise_street_suffix(mappings['street_suffix'])
+        if 'flat_type' in mappings:
+            mappings['flat_type'] = normalise_flat_type(mappings['flat_type'])
+        if 'level_type' in mappings:
+            mappings['level_type'] = normalise_level_type(mappings['level_type'])
 
-    return mappings
+        yield mappings

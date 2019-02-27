@@ -483,7 +483,7 @@ def dataset(filenames: [str], batch_size: int = 10, shuffle_buffer: int = 1000, 
     return input_fn
 
 
-def predict_input_fn(input_text: str) -> Callable:
+def predict_input_fn(input_text: List[str]) -> Callable:
     """
     An input function for one prediction example
     :param input_text: the input text
@@ -491,9 +491,20 @@ def predict_input_fn(input_text: str) -> Callable:
     """
 
     def input_fn() -> tf.data.Dataset:
-        length, text = vocab_lookup(input_text)
-        text = np.expand_dims(text, 0)
-        length = np.array([length])
+        length, text = None, None
+
+        for txt in input_text:
+            _length, _text = vocab_lookup(txt)
+            _text = np.expand_dims(_text, 0)
+            _length = np.array([_length])
+            if length is None:
+                length = _length
+            else:
+                length = np.concatenate([length, _length], axis=0)
+            if text is None:
+                text = _text
+            else:
+                text = np.concatenate([text, _text], axis=0)
         predict_ds = tf.data.Dataset.from_tensor_slices((length, text))
         predict_ds = predict_ds.batch(1)
         predict_ds = predict_ds.map(
