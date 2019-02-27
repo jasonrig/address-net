@@ -489,12 +489,14 @@ def predict_input_fn(input_text: List[str]) -> Callable:
     :param input_text: the input text
     :return:
     """
+    pad_length = max([len(t) for t in input_text])
 
     def input_fn() -> tf.data.Dataset:
         length, text = None, None
 
         for txt in input_text:
             _length, _text = vocab_lookup(txt)
+            _text = np.pad(_text, (0, pad_length - len(txt)), "constant")
             _text = np.expand_dims(_text, 0)
             _length = np.array([_length])
             if length is None:
