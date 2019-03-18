@@ -1,5 +1,7 @@
 # AddressNet
 
+[Read more on Towards Data Science](https://towardsdatascience.com/addressnet-how-to-build-a-robust-street-address-parser-using-a-recurrent-neural-network-518d97b9aebd)
+
 ## Background
 
 This project is an attempt to create a recurrent neural network that
