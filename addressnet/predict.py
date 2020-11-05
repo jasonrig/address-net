@@ -108,6 +108,13 @@ def normalise_level_type(s: str) -> str:
 
 @lru_cache(maxsize=2)
 def _get_estimator(model_fn, model_dir):
+    """
+    Get estimator function.
+
+    Args:
+        model_fn: (str): write your description
+        model_dir: (str): write your description
+    """
     return tf.estimator.Estimator(model_fn=model_fn,
                                   model_dir=model_dir)
 
