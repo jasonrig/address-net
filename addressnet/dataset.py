@@ -282,6 +282,11 @@ def synthesise_address(*record) -> (int, np.ndarray, np.ndarray):
 
     # Keep the street number? (If street number is dropped, the flat number is also dropped)
     def keep_street_number():
+        """
+        Keep the number of differing the number.
+
+        Args:
+        """
         # force flat number to be next to street number only if the flat number is only digits (i.e. does not have a
         # flat type)
         if flat_number[0].isdigit():
@@ -333,9 +338,21 @@ def generate_level_number(level_type: int, level_number_prefix: str, level_numbe
 
     # Decide whether to transform the level number
     def do_transformation():
+        """
+        Generate a transformation function.
+
+        Args:
+        """
         if not level_number_prefix and not level_number_suffix and level_type[0]:
             # If there is no prefix/suffix, decide whether to convert to ordinal numbers (1st, 2nd, etc.)
             def use_ordinal_numbers(lvl_num, lvl_type):
+                """
+                Returns a random integers.
+
+                Args:
+                    lvl_num: (int): write your description
+                    lvl_type: (str): write your description
+                """
                 # Use ordinal words (first, second, third) or numbers (1st, 2nd, 3rd)?
                 lvl_num = choose(lambda: lookups.num2word(lvl_num, output='ordinal_words'),
                                  lambda: lookups.num2word(lvl_num, output='ordinal'))
@@ -344,6 +361,13 @@ def generate_level_number(level_type: int, level_number_prefix: str, level_numbe
                                            sep=lambda: random_separator(1, 3, possible_sep_chars=None))
 
             def use_cardinal_numbers(lvl_num, lvl_type):
+                """
+                Return a random number of digits.
+
+                Args:
+                    lvl_num: (int): write your description
+                    lvl_type: (str): write your description
+                """
                 # Treat level 1 as GROUND?
                 if lvl_num == 1:
                     lvl_num = choose(lambda: "GROUND", lambda: 1)
@@ -461,6 +485,11 @@ def dataset(filenames: [str], batch_size: int = 10, shuffle_buffer: int = 1000, 
     """
 
     def input_fn() -> tf.data.Dataset:
+        """
+        Reads tf. example.
+
+        Args:
+        """
         ds = tf.data.TFRecordDataset(filenames, compression_type="GZIP")
         ds = ds.shuffle(buffer_size=shuffle_buffer)
         ds = ds.map(lambda record: tf.parse_single_example(record, features=_features), num_parallel_calls=8)
@@ -491,6 +520,11 @@ def predict_input_fn(input_text: List[str]) -> Callable:
     """
 
     def input_fn() -> tf.data.Dataset:
+        """
+        Returns tf. train.
+
+        Args:
+        """
         predict_ds = tf.data.Dataset.from_generator(
             lambda: (vocab_lookup(address) for address in input_text),
             (tf.int64, tf.int64),

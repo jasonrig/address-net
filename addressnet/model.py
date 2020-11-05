@@ -56,6 +56,11 @@ def nnet(encoded_strings: tf.Tensor, lengths: tf.Tensor, rnn_layers: int, rnn_si
     """
 
     def rnn_cell():
+        """
+        The rnn.
+
+        Args:
+        """
         probs = 0.8 if training else 1.0
         return tf.contrib.rnn.DropoutWrapper(tf.contrib.cudnn_rnn.CudnnCompatibleGRUCell(rnn_size),
                                              state_keep_prob=probs, output_keep_prob=probs)
