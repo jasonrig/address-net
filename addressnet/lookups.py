@@ -70,7 +70,7 @@ street_type_abbreviation = {'ACCESS': 'ACCS', 'ALLEY': 'ALLY', 'ALLEYWAY': 'ALWY
                             'LANE': 'LANE', 'LANEWAY': 'LNWY', 'LINE': 'LINE', 'LINK': 'LINK', 'LOOKOUT': 'LKT',
                             'LOOP': 'LOOP', 'MALL': 'MALL', 'MEANDER': 'MNDR', 'MEWS': 'MEWS', 'MOTORWAY': 'MTWY',
                             'NOOK': 'NOOK', 'OUTLOOK': 'OTLK', 'PARADE': 'PDE', 'PARKWAY': 'PWY', 'PASS': 'PASS',
-                            'PASSAGE': 'PSGE', 'PATH': 'PATH', 'PATHWAY': 'PWAY', 'PIAZZA': 'PIAZ', 'PLAZA': 'PLZA',
+                            'PASSAGE': 'PSGE', 'PATH': 'PATH', 'PATHWAY': 'PWAY', 'PIAZZA': 'PIAZ', 'PLACE': 'PL', 'PLAZA': 'PLZA',
                             'POCKET': 'PKT', 'POINT': 'PNT', 'PORT': 'PORT', 'PROMENADE': 'PROM', 'QUADRANT': 'QDRT',
                             'QUAYS': 'QYS', 'RAMBLE': 'RMBL', 'REST': 'REST', 'RETREAT': 'RTT', 'RIDGE': 'RDGE',
                             'RISE': 'RISE', 'ROAD': 'RD', 'ROTARY': 'RTY', 'ROUTE': 'RTE', 'ROW': 'ROW', 'RUE': 'RUE',
