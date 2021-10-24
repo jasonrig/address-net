@@ -463,10 +463,10 @@ def dataset(filenames: [str], batch_size: int = 10, shuffle_buffer: int = 1000, 
     def input_fn() -> tf.data.Dataset:
         ds = tf.data.TFRecordDataset(filenames, compression_type="GZIP")
         ds = ds.shuffle(buffer_size=shuffle_buffer)
-        ds = ds.map(lambda record: tf.parse_single_example(record, features=_features), num_parallel_calls=8)
+        ds = ds.map(lambda record: tf.io.parse_single_example(serialized=record, features=_features), num_parallel_calls=8)
         ds = ds.map(
-            lambda record: tf.py_func(synthesise_address, [record[k] for k in _features.keys()],
-                                      [tf.int64, tf.int64, tf.bool],
+            lambda record: tf.compat.v1.py_func(synthesise_address, [record[k] for k in _features.keys()],
+                                      [tf.int32, tf.int64, tf.bool],
                                       stateful=False),
             num_parallel_calls=num_parallel_calls
         )

@@ -64,8 +64,8 @@ def generate_tf_records(input_file_path: str, output_file_path: str, input_gzip:
 
         float_fields = ('latitude', 'longitude')
 
-        tf_options = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.GZIP)
-        with tf.python_io.TFRecordWriter(output_file_path, options=tf_options) as tf_writer:
+        tf_options = tf.io.TFRecordOptions(tf.compat.v1.python_io.TFRecordCompressionType.GZIP)
+        with tf.io.TFRecordWriter(output_file_path, options=tf_options) as tf_writer:
             for row in csv_reader:
                 record = dict()
                 for field in string_fields:
