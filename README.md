@@ -13,6 +13,8 @@ phone) into a reportable form at minimal cost. Once structured address
 data is produced, searching databases such as GNAF for geocoding
 information is much easier!
 
+You can test the capabilities of AddressNet with an interactive demo: [https://address-app.infocruncher.com](https://address-app.infocruncher.com/)
+
 ## Installation
 Get the latest code by installing directly from git using
 ```
