@@ -11,32 +11,32 @@ from addressnet.typo import generate_typo
 
 # Schema used to decode data from the TFRecord file
 _features = OrderedDict([
-    ('building_name', tf.FixedLenFeature([], tf.string)),
-    ('lot_number_prefix', tf.FixedLenFeature([], tf.string)),
-    ('lot_number', tf.FixedLenFeature([], tf.string)),
-    ('lot_number_suffix', tf.FixedLenFeature([], tf.string)),
-    ('flat_number_prefix', tf.FixedLenFeature([], tf.string)),
-    ('flat_number_suffix', tf.FixedLenFeature([], tf.string)),
-    ('level_number_prefix', tf.FixedLenFeature([], tf.string)),
-    ('level_number_suffix', tf.FixedLenFeature([], tf.string)),
-    ('number_first_prefix', tf.FixedLenFeature([], tf.string)),
-    ('number_first_suffix', tf.FixedLenFeature([], tf.string)),
-    ('number_last_prefix', tf.FixedLenFeature([], tf.string)),
-    ('number_last_suffix', tf.FixedLenFeature([], tf.string)),
-    ('street_name', tf.FixedLenFeature([], tf.string)),
-    ('locality_name', tf.FixedLenFeature([], tf.string)),
-    ('postcode', tf.FixedLenFeature([], tf.string)),
-    ('flat_number', tf.FixedLenFeature([], tf.int64)),
-    ('level_number', tf.FixedLenFeature([], tf.int64)),
-    ('number_first', tf.FixedLenFeature([], tf.int64)),
-    ('number_last', tf.FixedLenFeature([], tf.int64)),
-    ('flat_type', tf.FixedLenFeature([], tf.int64)),
-    ('level_type', tf.FixedLenFeature([], tf.int64)),
-    ('street_type_code', tf.FixedLenFeature([], tf.int64)),
-    ('street_suffix_code', tf.FixedLenFeature([], tf.int64)),
-    ('state_abbreviation', tf.FixedLenFeature([], tf.int64)),
-    ('latitude', tf.FixedLenFeature([], tf.float32)),
-    ('longitude', tf.FixedLenFeature([], tf.float32))
+    ('building_name', tf.io.FixedLenFeature([], tf.string)),
+    ('lot_number_prefix', tf.io.FixedLenFeature([], tf.string)),
+    ('lot_number', tf.io.FixedLenFeature([], tf.string)),
+    ('lot_number_suffix', tf.io.FixedLenFeature([], tf.string)),
+    ('flat_number_prefix', tf.io.FixedLenFeature([], tf.string)),
+    ('flat_number_suffix', tf.io.FixedLenFeature([], tf.string)),
+    ('level_number_prefix', tf.io.FixedLenFeature([], tf.string)),
+    ('level_number_suffix', tf.io.FixedLenFeature([], tf.string)),
+    ('number_first_prefix', tf.io.FixedLenFeature([], tf.string)),
+    ('number_first_suffix', tf.io.FixedLenFeature([], tf.string)),
+    ('number_last_prefix', tf.io.FixedLenFeature([], tf.string)),
+    ('number_last_suffix', tf.io.FixedLenFeature([], tf.string)),
+    ('street_name', tf.io.FixedLenFeature([], tf.string)),
+    ('locality_name', tf.io.FixedLenFeature([], tf.string)),
+    ('postcode', tf.io.FixedLenFeature([], tf.string)),
+    ('flat_number', tf.io.FixedLenFeature([], tf.int64)),
+    ('level_number', tf.io.FixedLenFeature([], tf.int64)),
+    ('number_first', tf.io.FixedLenFeature([], tf.int64)),
+    ('number_last', tf.io.FixedLenFeature([], tf.int64)),
+    ('flat_type', tf.io.FixedLenFeature([], tf.int64)),
+    ('level_type', tf.io.FixedLenFeature([], tf.int64)),
+    ('street_type_code', tf.io.FixedLenFeature([], tf.int64)),
+    ('street_suffix_code', tf.io.FixedLenFeature([], tf.int64)),
+    ('state_abbreviation', tf.io.FixedLenFeature([], tf.int64)),
+    ('latitude', tf.io.FixedLenFeature([], tf.float32)),
+    ('longitude', tf.io.FixedLenFeature([], tf.float32))
 ])
 
 # List of fields used as labels in the training data
@@ -463,9 +463,10 @@ def dataset(filenames: [str], batch_size: int = 10, shuffle_buffer: int = 1000, 
     def input_fn() -> tf.data.Dataset:
         ds = tf.data.TFRecordDataset(filenames, compression_type="GZIP")
         ds = ds.shuffle(buffer_size=shuffle_buffer)
-        ds = ds.map(lambda record: tf.parse_single_example(record, features=_features), num_parallel_calls=8)
+        ds = ds.map(lambda record: tf.io.parse_single_example(serialized=record, features=_features), num_parallel_calls=8)
         ds = ds.map(
-            lambda record: tf.py_func(synthesise_address, [record[k] for k in _features.keys()],
+            # TODO: use py_function or numpy_function for tf.py_func?
+            lambda record: tf.compat.v1.py_func(synthesise_address, [record[k] for k in _features.keys()],
                                       [tf.int64, tf.int64, tf.bool],
                                       stateful=False),
             num_parallel_calls=num_parallel_calls
