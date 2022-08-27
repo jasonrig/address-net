@@ -2,6 +2,7 @@ import gzip
 import csv
 import tensorflow as tf
 import argparse
+from tqdm import tqdm
 
 from addressnet.lookups import lookup_flat_type, lookup_level_type, lookup_street_type, lookup_street_suffix, \
     lookup_state
@@ -39,7 +40,7 @@ def _float_feature(data: float) -> tf.train.Feature:
     return tf.train.Feature(float_list=tf.train.FloatList(value=[float(data)]))
 
 
-def generate_tf_records(input_file_path: str, output_file_path: str, input_gzip: bool=True):
+def generate_tf_records(input_file_path: str, output_file_path: str, input_gzip: bool = True):
     """
     Processes the input CSV file to produce a tfrecord file
     :param input_file_path: input CSV file
@@ -48,6 +49,13 @@ def generate_tf_records(input_file_path: str, output_file_path: str, input_gzip:
     """
     file_open = gzip.open if input_gzip else open
     file_open_mode = "rt" if input_gzip else "r"
+
+    with file_open(input_file_path, file_open_mode) as f:
+        num_lines = sum(1 for _ in f)
+    print(f"Input: {input_file_path}")
+    print(f"Output: {output_file_path}")
+    print(f"Line count: {num_lines}")
+
     with file_open(input_file_path, file_open_mode, newline="") as f:
         csv_reader = csv.DictReader(f)
 
@@ -64,9 +72,9 @@ def generate_tf_records(input_file_path: str, output_file_path: str, input_gzip:
 
         float_fields = ('latitude', 'longitude')
 
-        tf_options = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.GZIP)
-        with tf.python_io.TFRecordWriter(output_file_path, options=tf_options) as tf_writer:
-            for row in csv_reader:
+        tf_options = tf.io.TFRecordOptions(compression_type='GZIP')
+        with tf.io.TFRecordWriter(output_file_path, options=tf_options) as tf_writer:
+            for row in tqdm(csv_reader, total=num_lines):
                 record = dict()
                 for field in string_fields:
                     record[field] = _str_feature(row[field])

@@ -13,15 +13,15 @@ predict:
 	$(CONDA_ACTIVATE); conda activate ./env; python predict.py /Users/dylan/_gitdrh/address-net/addressnet/pretrained "casa del gelato, 10A 24-26 high street road mount waverley vic 3183"
 
 predict_custom_model:
-	$(CONDA_ACTIVATE); conda activate ./env; predict.py /Users/dylan/_gitdrh/address-net/addressnet/custom_model/address_view_5000000.tfrecord "casa del gelato, 10A 24-26 high street road mount waverley vic 3183"
-
+	$(CONDA_ACTIVATE); conda activate ./env; python predict.py /Users/dylan/_gitdrh/address-net/addressnet/custom_model/address_view_5000000.tfrecord "casa del gelato, 10A 24-26 high street road mount waverley vic 3183"
 
 generate_tf_records:
-	$(CONDA_ACTIVATE); conda activate ./env; python generate_tf_records.py /Users/dylan/_data/gnaf/address_view_aug2022_top1K.csv /Users/dylan/_data/gnaf/address_view_aug2022_top1K.tfrecord
-
+	# $(CONDA_ACTIVATE); conda activate ./env; python generate_tf_records.py /Users/dylan/_data/gnaf/address_view_aug2022_top10K.csv.gz /Users/dylan/_data/gnaf/address_view_aug2022_top10K.tfrecord --gzipped_input
+	$(CONDA_ACTIVATE); conda activate ./env; python generate_tf_records.py /Users/dylan/_data/gnaf/address_view_aug2022_top1M.csv.gz /Users/dylan/_data/gnaf/address_view_aug2022_top1M.tfrecord --gzipped_input
+	# $(CONDA_ACTIVATE); conda activate ./env; python generate_tf_records.py /Users/dylan/_data/gnaf/address_view_aug2022_top5M.csv.gz /Users/dylan/_data/gnaf/address_view_aug2022_top5M.tfrecord --gzipped_input
 
 train:
-	$(CONDA_ACTIVATE); conda activate ./env; train.py /Users/dylan/Datasets/data.gov.au/gnaf_202002/address_view_5000000.tfrecord /Users/dylan/_gitdrh/address-net/addressnet/custom_model
+	$(CONDA_ACTIVATE); conda activate ./env; python train.py /Users/dylan/_data/gnaf/address_view_aug2022_top10K.tfrecord /Users/dylan/_gitdrh/address-net/pretrained_custom
 
 .DEFAULT_GOAL := help
 .PHONY: help

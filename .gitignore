@@ -1,5 +1,5 @@
 .idea/
-custom_model/
+addressnet/pretrained_custom/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
